@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------
 # miniSelfSup
-# Copyright (c) 2021 MMLab@NTU. All Rights Reserved.
+# Copyright (c) MMLab@NTU. All Rights Reserved.
 # Licensed under the Apache License, Version 2.0 [see LICENSE for details]
 # ------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ def main():
     utils.init_distributed_mode(args)
     utils.init_rand_seed(args.seed)
     print(args)
-    # print("git:\n  {}\n".format(utils.get_sha()))
+    print("git:\n  {}\n".format(utils.get_sha()))
 
     # Build dataset and loaders
     train_loader, val_loader = build_dataloaders(cfg.data, 

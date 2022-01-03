@@ -1,11 +1,6 @@
 #!/usr/bin/bash
 GPU_NUM=$1
-JOB_NAME=jupyter-$2
-
-
-GPUS=${GPUS:-8}
-GPUS_PER_NODE=${GPUS_PER_NODE:-8}
-CPUS_PER_TASK=${CPUS_PER_TASK:-5}
+JOB_NAME=$2
 
 EXPS='exps'
 if ! [ -d "$EXPS" ]; then

@@ -23,7 +23,6 @@ else
 fi
 
 export PYTHONPATH=./:$PYTHONPATH
-# GLOG_vmodule=MemcachedClient=-1 \
 srun -p dsta --mpi=pmi2 --gres=gpu:$NTASKS -n$GPU_NUM --ntasks-per-node=$NTASKS \
 --kill-on-bad-exit=1 -w $HOST --job-name=$JOB_NAME \
 python -u tools/train.py \

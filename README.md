@@ -1,5 +1,5 @@
 # miniSelfSup
-This repository is an unofficial implementation of recent state-of-the-art SSL methods.
+This repository is an unofficial Pytorch implementation of recent state-of-the-art SSL methods.
 
 
 ## Installation
