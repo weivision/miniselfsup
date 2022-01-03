@@ -66,7 +66,7 @@ def main():
         if args.cfg_options is not None:
             cfg.merge_from_dict(args.cfg_options)
     else:
-        print("Not using JSON configuration file!")
+        print("Not using configuration file!")
         exit(0)
 
     if args.work_dir:
@@ -76,7 +76,7 @@ def main():
     utils.init_distributed_mode(args)
     utils.init_rand_seed(args.seed)
     print(args)
-    # print("git:\n  {}\n".format(utils.get_sha()))
+    print("git:\n  {}\n".format(utils.get_sha()))
 
     # Build dataset and loaders
     train_loader, val_loader = build_dataloaders(cfg.data, 
@@ -84,9 +84,6 @@ def main():
     
     # Build model
     model = build_model(cfg.model)
-
-    # if args.load_from:
-    #     model.load_state_dict(ckpt_file=args.load_from, strict=False)
     
     if args.distributed:
         # apply sync_bn
