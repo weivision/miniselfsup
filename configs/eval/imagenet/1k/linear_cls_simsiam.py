@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------
 # miniSelfSup
-# Copyright (c) 2021 MMLab@NTU. All Rights Reserved.
+# Copyright (c) MMLab@NTU. All Rights Reserved.
 # Licensed under the Apache License, Version 2.0 [see LICENSE for details]
 # ------------------------------------------------------------------------
 
@@ -8,7 +8,7 @@
 # dataset config
 data = dict(
     dataset='imagenet1k',
-    root='/mnt/lustre/share/images',
+    root='/mnt/lustre/share/wli/database/imagenet',
     imgs_per_gpu=1024,  # total 512*8=4096
     workers_per_gpu=4,
     train_only=True,
@@ -31,7 +31,8 @@ model = dict(
     backbone=dict(
         name='resnet50',
         zero_init_residual=False,
-        eval_mode=False,),
+        eval_mode=False,
+        padding_mode=True,),
     neck=None,
     head=dict(
         name='ClsHead',

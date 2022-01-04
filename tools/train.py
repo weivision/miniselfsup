@@ -122,7 +122,7 @@ def main():
     # Build trainer
     trainer = Trainer(cfg, (train_loader, val_loader), model, 
                       optimizer, scheduler, distributed=args.distributed)
-
+    
     if args.resume_from:
         trainer.resume(ckpt_file=args.resume_from)
     

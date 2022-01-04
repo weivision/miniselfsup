@@ -25,23 +25,20 @@ def main():
     assert args.output.endswith('.pth')
     ck = torch.load(args.checkpoint, map_location=torch.device('cpu'))
     output_dict = dict(state_dict=dict(), author='miniSelfSup')
-    # import pdb; pdb.set_trace()
+    
     has_backbone = False
     for key, value in ck['state_dict'].items():
 
-        # import pdb; pdb.set_trace()
-        # if key.startswith('backbone'):
-        #     import pdb; pdb.set_trace()
-        #     output_dict['state_dict'][key[9:]] = value
-        #     has_backbone = True
-        if key.startswith('module.encoder.0'): 
-            # import pdb; pdb.set_trace()
-            output_dict['state_dict'][key[17:]] = value
-            # has_backbone = True
-
-    # if not has_backbone:
-    #     raise Exception('Cannot find a backbone module in the checkpoint.')
-    import pdb; pdb.set_trace()
+        if key.startswith('module.backbone.'): 
+            output_dict['state_dict'][key[16:]] = value
+            has_backbone = True
+        elif key.startswith('backbone.'):
+            output_dict['state_dict'][key[16:]] = value
+            has_backbone = True
+        
+    if not has_backbone:
+        raise Exception('Cannot find a backbone module in the checkpoint.')
+    
     torch.save(output_dict, args.output)
 
 if __name__ == '__main__':

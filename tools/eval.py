@@ -87,16 +87,18 @@ def main():
     
     if args.distributed:
         # apply sync_bn
-        model = SyncBatchNorm.convert_sync_batchnorm(model).cuda()
-        model = DistributedDataParallel(model, device_ids=[args.gpu], 
-                                        output_device=args.gpu)
-    else:
-        model = model.cuda()
+        model = SyncBatchNorm.convert_sync_batchnorm(model)
+    
+    model = model.cuda()
     print(model)
 
-    # Build optimizer and scheduler
-    optimizer = build_optimizer(cfg.optimizer, model, 
-                                distributed=args.distributed)
+    # Build optimizer
+    optimizer = build_optimizer(cfg.optimizer, model)
+
+    if args.distributed:
+        model = DistributedDataParallel(model, device_ids=[args.gpu],output_device=args.gpu)
+
+    # Build scheduler
     scheduler = build_scheduler(cfg.scheduler, optimizer)
 
     # Build trainer
@@ -111,6 +113,8 @@ def main():
         evaluator.resume(ckpt_file=args.resume_from)
     
     print("Start training ......")
+    # enable cudnn benchmark 
+    cudnn.benchmark = True
     evaluator.train()
     print("Finished!")
 

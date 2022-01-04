@@ -129,10 +129,10 @@ class Evaluator(BaseEvaluator):
             if self.distributed:
                 self.train_loader.sampler.set_epoch(epoch)
             
-            self.scheduler.step(epoch)
+            self.scheduler.epoch_step(epoch)
             # train for one epoch
             self.train_one_epoch(epoch)
-
+            
             if (epoch+1) % self.eval_freq == 0:
                 acc1 = self.eval()
 
