@@ -14,7 +14,6 @@ import warnings
 from pathlib import Path
 import numpy as np
 
-import apex
 import torch
 import torch.backends.cudnn as cudnn
 from torch.nn import SyncBatchNorm
@@ -92,28 +91,17 @@ def main():
         # apply sync_bn
         if cfg.sync_bn == "pytorch":
             model = SyncBatchNorm.convert_sync_batchnorm(model)
-        elif cfg.sync_bn == "apex":
-            # apex syncbn sync bn per group can speeds up 
-            # computation compared to global syncbn
-            process_group = apex.parallel.create_syncbn_process_group(cfg.syncbn_process_group_size)
-            model = apex.parallel.convert_syncbn_model(model, process_group=process_group)
         else:
-            raise ValueError("Not supported type of BN: {}, must be 'pytorch' or 'apex'!".format(cfg.sync_bn))
+            raise ValueError("Not supported type of BN: {}, must be 'pytorch'!".format(cfg.sync_bn))
     
     model = model.cuda()
     print(model)
 
     # Build optimizer
     optimizer = build_optimizer(cfg.optimizer, model)
-    
-    if cfg.use_fp16:
-        # init mixed precision
-        model, optimizer = apex.amp.initialize(model, optimizer, opt_level="O1")
-        print("Initializing apex mixed precision done.")
 
     if args.distributed:
-        # model = DistributedDataParallel(model, device_ids=[args.gpu], output_device=args.gpu)
-        model = DistributedDataParallel(model, device_ids=[args.gpu])
+        model = DistributedDataParallel(model, device_ids=[args.gpu], output_device=args.gpu)
 
     # Build scheduler
     scheduler = build_scheduler(cfg.scheduler, optimizer)

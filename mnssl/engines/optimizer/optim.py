@@ -32,7 +32,7 @@ def SwAV(cfg, model):
                                 momentum=cfg.momentum,
                                 weight_decay=cfg.weight_decay)
     if cfg.lars:
-        from apex.parallel.LARC import LARC
+        from .larc import LARC
         optimizer = LARC(optimizer=optimizer, trust_coefficient=0.001, clip=False)
 
     return optimizer
@@ -72,7 +72,7 @@ def BYOL(cfg, model):
             param_group['weight_decay'] = 0.
     
     if cfg.lars:
-        from apex.parallel.LARC import LARC
+        from .larc import LARC
         optimizer = LARC(optimizer=optimizer, trust_coefficient=0.001, clip=False)
     
     return optimizer
@@ -88,7 +88,7 @@ def LinearCls(cfg, model):
                                 weight_decay=cfg.weight_decay)
     
     if cfg.lars:
-        from apex.parallel.LARC import LARC
+        from .larc import LARC
         optimizer = LARC(optimizer=optimizer, trust_coefficient=0.001, clip=False)
 
     return optimizer
