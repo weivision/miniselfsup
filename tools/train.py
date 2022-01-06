@@ -101,7 +101,7 @@ def main():
     optimizer = build_optimizer(cfg.optimizer, model)
 
     if args.distributed:
-        model = DistributedDataParallel(model, device_ids=[args.gpu], output_device=args.gpu)
+        model = DistributedDataParallel(model, device_ids=[args.gpu])
 
     # Build scheduler
     scheduler = build_scheduler(cfg.scheduler, optimizer)

@@ -50,7 +50,8 @@ def build_dataloaders(cfg, distributed=False):
     
     train_loader = DataLoader(
         train_dataset, batch_size=cfg.imgs_per_gpu, shuffle=(train_sampler is None),
-        num_workers=cfg.workers_per_gpu, pin_memory=True, sampler=train_sampler, drop_last=True)
+        num_workers=cfg.workers_per_gpu, pin_memory=True, sampler=train_sampler, 
+        drop_last=True, persistent_workers=True)
     
     if val_dataset:
         val_loader = DataLoader(
