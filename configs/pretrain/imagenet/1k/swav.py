@@ -68,6 +68,7 @@ sync_bn='pytorch'
 optimizer = dict(
     name='SwAV',
     type='sgd',
+    use_fp16=use_fp16,
     base_lr=lr,
     lars=True,
     momentum=0.9,

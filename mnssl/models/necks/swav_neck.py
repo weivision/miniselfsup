@@ -47,5 +47,13 @@ class SwAVNeck(nn.Module):
             x = nn.functional.normalize(x, dim=1, p=2)
         
         if self.prototypes is not None:
+
+            # normalize the prototypes
+            with torch.no_grad():
+                w = self.prototypes.weight.data.clone()
+                w = nn.functional.normalize(w, dim=1, p=2)
+                self.prototypes.weight.copy_(w)
+            
             return x, self.prototypes(x)
+        
         return x

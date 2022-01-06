@@ -108,13 +108,12 @@ def main():
     
     if cfg.use_fp16:
         # init mixed precision
-        model, amp_optimizer = apex.amp.initialize(model, optimizer.optimizer, opt_level="O1")
-        optimizer.update(amp_optimizer)
+        model, optimizer = apex.amp.initialize(model, optimizer, opt_level="O1")
         print("Initializing apex mixed precision done.")
 
     if args.distributed:
-        model = DistributedDataParallel(model, device_ids=[args.gpu], 
-                                        output_device=args.gpu)
+        # model = DistributedDataParallel(model, device_ids=[args.gpu], output_device=args.gpu)
+        model = DistributedDataParallel(model, device_ids=[args.gpu])
 
     # Build scheduler
     scheduler = build_scheduler(cfg.scheduler, optimizer)

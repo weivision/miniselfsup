@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-echo '[USAGE] sh scripts/slurm_eval.sh <CONFIG> <ID> <GPU_NUM> <PORT> <JOB_NAME>'
+echo '[USAGE] sh scripts/slurm_eval.sh <CONFIG> <ID> <GPU_NUM> <PORT> <CKPT> <JOB_NAME>'
 set -x
 
 CONFIG=$1

@@ -9,8 +9,8 @@
 data = dict(
     dataset='imagenet1k',
     root='/mnt/lustre/share/wli/database/imagenet',
-    imgs_per_gpu=1024,  # total 512*8=4096
-    workers_per_gpu=10,
+    imgs_per_gpu=512,  # total 512*8=4096
+    workers_per_gpu=5,
     train_only=True,
     train_transform=dict(
         name='train',

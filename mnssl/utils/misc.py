@@ -176,7 +176,7 @@ def save_on_master(*args, **kwargs):
 def save_checkpoint(state, is_best, path=None, filename='checkpoint.pth.tar'):
     save_file = os.path.join(path, filename)
     save_on_master(state, save_file)
-    if is_best:
+    if is_best and is_main_process():
         shutil.copyfile(save_file, os.path.join(path,'model_best.pth.tar'))
 
 

@@ -110,14 +110,14 @@ def ssl(dataset, cfg):
 
     elif cfg.type in ['swav',]:
     
-        color_transform = [
+        color_transform = [transforms.Compose([
                 transforms.RandomApply([
                     transforms.ColorJitter(0.8, 0.8, 0.8, 0.2)
                 ], p=0.8),
-                transforms.RandomGrayscale(p=0.2),
+                transforms.RandomGrayscale(p=0.2)]),
                 transforms.RandomApply([GaussianBlur([.1, 2.])], p=0.5),
             ]
-
+        
         trans = []
         for i in range(len(cfg.crop_size)):
             randomresizedcrop = transforms.RandomResizedCrop(

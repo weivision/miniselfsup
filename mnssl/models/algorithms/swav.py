@@ -34,18 +34,11 @@ class SwAV(BaseMethod):
         self.iteration = 0
     
     def forward(self, inputs):
-        
-        # normalize the prototypes
-        with torch.no_grad():
-            w = self.neck.prototypes.weight.data.clone()
-            w = nn.functional.normalize(w, dim=1, p=2)
-            self.neck.prototypes.weight.copy_(w)
 
         embeddings, outputs = self._forward_backbone_and_neck(inputs)
         embeddings = embeddings.detach()
         protos = self.neck.prototypes.weight.t()
         
-        # self.head.epoch = self.epoch
         loss = self.head(embeddings, outputs, protos)['loss']
         return dict(loss=loss)
     

@@ -127,7 +127,7 @@ class Trainer(BaseTrainer):
             
             # compute gradient and do SGD step
             if self.use_fp16:
-                with apex.amp.scale_loss(loss, self.optimizer.optimizer) as scaled_loss:
+                with apex.amp.scale_loss(loss, self.optimizer) as scaled_loss:
                     scaled_loss.backward()
             else:
                 loss.backward()
