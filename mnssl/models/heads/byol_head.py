@@ -18,8 +18,7 @@ class BYOLHead(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(BYOLHead, self).__init__()
         

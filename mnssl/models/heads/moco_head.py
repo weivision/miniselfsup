@@ -22,8 +22,7 @@ class MoCoHead(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(MoCoHead, self).__init__()
 

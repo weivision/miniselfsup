@@ -18,8 +18,7 @@ class SimSiamHead(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(SimSiamHead, self).__init__()
         

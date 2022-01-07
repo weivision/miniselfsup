@@ -19,8 +19,7 @@ class MoCoNeck(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(MoCoNeck, self).__init__()
 

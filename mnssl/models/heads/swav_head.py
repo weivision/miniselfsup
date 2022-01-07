@@ -21,8 +21,7 @@ class SwAVHead(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(SwAVHead, self).__init__()
         

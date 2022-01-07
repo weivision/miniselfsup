@@ -18,8 +18,7 @@ class ClsHead(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(ClsHead, self).__init__()
 

@@ -19,8 +19,7 @@ class SwAVNeck(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(SwAVNeck, self).__init__()
 

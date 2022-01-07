@@ -19,8 +19,7 @@ class SimSiamNeck(nn.Module):
     def __init__(self, cfg):
         """
         Args:
-
-        cfg: configs
+            cfg: configs
         """
         super(SimSiamNeck, self).__init__()
 
