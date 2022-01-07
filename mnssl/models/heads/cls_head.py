@@ -19,8 +19,7 @@ class ClsHead(nn.Module):
         """
         Args:
 
-        input_dim: input dimension of the predictor(default: 2048)
-        num_classes: number of predictions (default: 1000)
+        cfg: configs
         """
         super(ClsHead, self).__init__()
 
