@@ -112,7 +112,6 @@ def main():
         print("Initializing apex mixed precision done.")
 
     if args.distributed:
-        # model = DistributedDataParallel(model, device_ids=[args.gpu], output_device=args.gpu)
         model = DistributedDataParallel(model, device_ids=[args.gpu])
 
     # Build scheduler
