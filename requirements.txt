@@ -1,4 +1,5 @@
+pytorch>=1.8.1
+torchvision>=0.9.1
 yapf >= 0.31.0
 shutil
-apex
 zipfile

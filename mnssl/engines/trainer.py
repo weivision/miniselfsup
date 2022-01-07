@@ -7,11 +7,11 @@
 
 import os
 import time
-import apex
 import torch
 import torch.backends.cudnn as cudnn
 from mnssl.utils import AverageMeter, ProgressMeter
 from mnssl.utils import is_main_process, save_checkpoint
+from torch.cuda.amp import autocast as autocast, GradScaler
 
 
 class BaseTrainer:
@@ -51,9 +51,6 @@ class BaseTrainer:
             self.model.load_state_dict(checkpoint['state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer'])
             
-            if self.use_fp16:
-                apex.amp.load_state_dict(checkpoint['amp'])
-
             print("=> loaded checkpoint '{}' (epoch {})"
                     .format(ckpt_file, checkpoint['epoch']))
         else:
@@ -76,11 +73,17 @@ class Trainer(BaseTrainer):
         self.train_loader, self.val_loader = data_loaders
         self.model = model
 
-        self.use_fp16 = cfg.use_fp16
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.distributed = distributed
         self.start_epoch = 0
+
+        self.use_fp16 = cfg.use_fp16
+
+        if self.use_fp16:
+            self.scaler = GradScaler()
+        else:
+            self.scaler = None
 
         if self.distributed:
             model_dict = model.module.__dict__
@@ -116,7 +119,12 @@ class Trainer(BaseTrainer):
             self.scheduler.iter_step(epoch, i)
 
             # compute output and loss
-            outputs = self.model(images)
+            if self.use_fp16:
+                with autocast():
+                    outputs = self.model(images)
+            else:
+                outputs = self.model(images)
+
             loss = outputs['loss']
             losses.update(loss.item(), images[0].size(0))
 
@@ -127,8 +135,7 @@ class Trainer(BaseTrainer):
             
             # compute gradient and do SGD step
             if self.use_fp16:
-                with apex.amp.scale_loss(loss, self.optimizer) as scaled_loss:
-                    scaled_loss.backward()
+                self.scaler.scale(loss).backward()
             else:
                 loss.backward()
 
@@ -138,7 +145,12 @@ class Trainer(BaseTrainer):
                 self.model.optim_update()
             
             if ((i + 1) % self.update_interval == 0) or (i + 1 == iter_per_epoch):
-                self.optimizer.step()
+                if self.use_fp16:
+                    self.scaler.step(self.optimizer)
+                    self.scaler.update()
+                else:
+                    self.optimizer.step()
+
                 self.optimizer.zero_grad()
 
             if self.distributed:
@@ -181,8 +193,6 @@ class Trainer(BaseTrainer):
                     'state_dict': self.model.state_dict(),
                     'optimizer' : self.optimizer.state_dict(),
                 }
-                if self.use_fp16:
-                    save_dict['amp'] = apex.amp.state_dict()
-                
+
                 save_checkpoint(save_dict, is_best=False, path=self.work_dir, 
                     filename='checkpoint_{:04d}.pth.tar'.format(epoch))

@@ -22,6 +22,7 @@ else
    NTASKS=$GPU_NUM
 fi
 
+
 export PYTHONPATH=./:$PYTHONPATH
 srun -p dsta --mpi=pmi2 --gres=gpu:$NTASKS -n$GPU_NUM --ntasks-per-node=$NTASKS \
 --kill-on-bad-exit=1 -w $HOST --job-name=$JOB_NAME \
@@ -29,5 +30,4 @@ python -u tools/train.py \
         configs/pretrain/imagenet/1k/$CONFIG.py \
         --work_dir $EXPS/$JOB_NAME \
         --port $PORT \
-        --seed 31 \
         2>&1 | tee $EXPS/$JOB_NAME.log > /dev/null &
