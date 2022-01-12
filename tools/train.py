@@ -12,47 +12,40 @@ import random
 import time
 import warnings
 from pathlib import Path
-import numpy as np
 
+import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 from torch.nn import SyncBatchNorm
 from torch.nn.parallel.distributed import DistributedDataParallel
 
 import mnssl.utils as utils
-from mnssl.utils.config import Config, DictAction
 from mnssl.datasets import build_dataloaders
+from mnssl.engines import Trainer, build_optimizer, build_scheduler
 from mnssl.models import build_model
-from mnssl.engines import build_optimizer, build_scheduler
-from mnssl.engines import Trainer
+from mnssl.utils.config import Config, DictAction
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='miniSelfSup training script.')
-    parser.add_argument('config', help='train config file path')
-    parser.add_argument('--work_dir', help='the dir to save logs and models')
+    parser = argparse.ArgumentParser(description="miniSelfSup training script.")
+    parser.add_argument("config", help="train config file path")
+    parser.add_argument("--work_dir", help="the dir to save logs and models")
+    parser.add_argument("--resume_from", help="the checkpoint file to resume from")
     parser.add_argument(
-        '--resume_from', help='the checkpoint file to resume from')
-    parser.add_argument(
-        '--cfg-options',
-        nargs='+',
+        "--cfg-options",
+        nargs="+",
         action=DictAction,
-        help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
+        help="override some settings in the used config, the key-value pair "
+        "in xxx=yyy format will be merged into config file. If the value to "
         'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
         'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-        'Note that the quotation marks are necessary and that no white space '
-        'is allowed.')
+        "Note that the quotation marks are necessary and that no white space "
+        "is allowed.",
+    )
     parser.add_argument(
-        '--port', 
-        default=None, 
-        type=str,
-        help='port used to set up distributed training')
-    parser.add_argument(
-        '--seed', 
-        default=None, 
-        type=int,
-        help='fix the seed for reproducibility')
+        "--port", default=None, type=str, help="port used to set up distributed training"
+    )
+    parser.add_argument("--seed", default=None, type=int, help="fix the seed for reproducibility")
     args = parser.parse_args()
     return args
 
@@ -71,19 +64,18 @@ def main():
     if args.work_dir:
         Path(args.work_dir).mkdir(parents=True, exist_ok=True)
         cfg.work_dir = args.work_dir
-    
+
     utils.init_distributed_mode(args)
     utils.init_rand_seed(args.seed)
     print(args)
     print("git:\n  {}\n".format(utils.get_sha()))
 
     # Build dataset and loaders
-    train_loader, val_loader = build_dataloaders(cfg.data, 
-                                distributed=args.distributed)
+    train_loader, val_loader = build_dataloaders(cfg.data, distributed=args.distributed)
     # update dataset statistics
     cfg.scheduler.iter_per_epoch = len(train_loader)
     print(cfg)
-    
+
     # Build model
     model = build_model(cfg.model)
 
@@ -93,7 +85,7 @@ def main():
             model = SyncBatchNorm.convert_sync_batchnorm(model)
         else:
             raise ValueError("Not supported type of BN: {}, must be 'pytorch'!".format(cfg.sync_bn))
-    
+
     model = model.cuda()
     print(model)
 
@@ -105,21 +97,22 @@ def main():
 
     # Build scheduler
     scheduler = build_scheduler(cfg.scheduler, optimizer)
-    
+
     # Build trainer
-    trainer = Trainer(cfg, (train_loader, val_loader), model, 
-                      optimizer, scheduler, distributed=args.distributed)
-    
+    trainer = Trainer(
+        cfg, (train_loader, val_loader), model, optimizer, scheduler, distributed=args.distributed
+    )
+
     if args.resume_from:
         trainer.resume(ckpt_file=args.resume_from)
-    
+
     print("Start training ......")
-    # enable cudnn benchmark 
+    # enable cudnn benchmark
     cudnn.benchmark = True
 
     trainer.train()
     print("Finished!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

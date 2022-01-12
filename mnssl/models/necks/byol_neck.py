@@ -16,6 +16,7 @@ class BYOLNeck(nn.Module):
     """
     Build a BYOL neck.
     """
+
     def __init__(self, cfg):
         """
         Args:
@@ -24,11 +25,13 @@ class BYOLNeck(nn.Module):
         super(BYOLNeck, self).__init__()
 
         # build a 2-layer projector
-        self.projector = nn.Sequential(nn.Linear(cfg.input_dim, cfg.hidden_dim, bias=True), # hidden layer
-                                       nn.BatchNorm1d(cfg.hidden_dim),
-                                       nn.ReLU(inplace=True),
-                                       nn.Linear(cfg.hidden_dim, cfg.output_dim, bias=False)) # output layer
-    
+        self.projector = nn.Sequential(
+            nn.Linear(cfg.input_dim, cfg.hidden_dim, bias=True),  # hidden layer
+            nn.BatchNorm1d(cfg.hidden_dim),
+            nn.ReLU(inplace=True),
+            nn.Linear(cfg.hidden_dim, cfg.output_dim, bias=False),
+        )  # output layer
+
     def forward(self, x):
-        z = self.projector(x) # NxC
+        z = self.projector(x)  # NxC
         return z

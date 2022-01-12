@@ -6,6 +6,6 @@
 
 
 from .backbones.build import build_backbone
-from .necks.build import build_neck
-from .heads.build import build_head
 from .build import build_model
+from .heads.build import build_head
+from .necks.build import build_neck

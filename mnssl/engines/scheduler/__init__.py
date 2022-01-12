@@ -5,8 +5,5 @@
 # ------------------------------------------------------------------------
 
 
-from .policy import SimSiam
-from .policy import SwAV
-from .policy import MoCo
-from .policy import LinearCls
 from .build import build_scheduler
+from .policy import LinearCls, MoCo, SimSiam, SwAV

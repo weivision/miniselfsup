@@ -7,15 +7,12 @@
 
 from mnssl.utils import Registry, check_availability
 
-
-SCHEDULER_REGISTRY = Registry('SCHEDULER')
+SCHEDULER_REGISTRY = Registry("SCHEDULER")
 
 
 def build_scheduler(cfg, optimizer):
     avai_schedulers = SCHEDULER_REGISTRY.registered_names()
     check_availability(cfg.name, avai_schedulers)
-    print('| --- scheduler: {}'.format(cfg.name))
-    
-    return SCHEDULER_REGISTRY.get(cfg.name)(
-        cfg, optimizer
-    )
+    print("| --- scheduler: {}".format(cfg.name))
+
+    return SCHEDULER_REGISTRY.get(cfg.name)(cfg, optimizer)

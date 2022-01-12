@@ -5,12 +5,14 @@
 # ------------------------------------------------------------------------
 
 
-import torch
-import torch.nn as nn
-import torch.distributed as dist
-import torch.nn.functional as F
 import numpy as np
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+import torch.nn.functional as F
+
 from mnssl.utils import concat_all_gather
+
 from .build import HEAD_REGISTRY
 
 
@@ -19,6 +21,7 @@ class MoCoHead(nn.Module):
     """
     Build a MoCo head.
     """
+
     def __init__(self, cfg):
         """
         Args:
@@ -31,9 +34,9 @@ class MoCoHead(nn.Module):
         self.feat_dim = cfg.feat_dim
 
         # create the queue
-        self.register_buffer('queue', torch.randn(cfg.feat_dim, cfg.queue_len))
+        self.register_buffer("queue", torch.randn(cfg.feat_dim, cfg.queue_len))
         self.queue = nn.functional.normalize(self.queue, dim=0)
-        self.register_buffer('queue_ptr', torch.zeros(1, dtype=torch.long))
+        self.register_buffer("queue_ptr", torch.zeros(1, dtype=torch.long))
 
         self.criterion = nn.CrossEntropyLoss()
 
@@ -42,9 +45,9 @@ class MoCoHead(nn.Module):
         # compute logits
         # Einstein sum is more intuitive
         # positive logits: Nx1
-        l_pos = torch.einsum('nc,nc->n', [q, k]).unsqueeze(-1)
+        l_pos = torch.einsum("nc,nc->n", [q, k]).unsqueeze(-1)
         # negative logits: NxK
-        l_neg = torch.einsum('nc,ck->nk', [q, self.queue.clone().detach()])
+        l_neg = torch.einsum("nc,ck->nk", [q, self.queue.clone().detach()])
 
         # logits: Nx(1+K)
         logits = torch.cat([l_pos, l_neg], dim=1)
@@ -59,9 +62,9 @@ class MoCoHead(nn.Module):
         self._dequeue_and_enqueue(k)
 
         loss = self.criterion(logits, labels)
-        
+
         return dict(loss=loss)
-    
+
     @torch.no_grad()
     def _dequeue_and_enqueue(self, keys):
         """Update queue."""
@@ -74,7 +77,7 @@ class MoCoHead(nn.Module):
         assert self.queue_len % batch_size == 0  # for simplicity
 
         # replace the keys at ptr (dequeue and enqueue)
-        self.queue[:, ptr:ptr + batch_size] = keys.transpose(0, 1)
+        self.queue[:, ptr : ptr + batch_size] = keys.transpose(0, 1)
         ptr = (ptr + batch_size) % self.queue_len  # move pointer
 
         self.queue_ptr[0] = ptr

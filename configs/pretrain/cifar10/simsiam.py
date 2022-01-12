@@ -1,8 +1,7 @@
-
 # dataset config
 data = dict(
-    name='cifar10',
-    root='',
+    name="cifar10",
+    root="",
     train_only=False,
     transforms=None,
 )
@@ -10,10 +9,11 @@ data = dict(
 
 # model config
 model = dict(
-    type='simsiam',
+    type="simsiam",
     backbone=dict(
-        name='resnet18',
-        eval_mode=True,),
+        name="resnet18",
+        eval_mode=True,
+    ),
     neck=dict(),
     head=dict(),
 )

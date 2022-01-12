@@ -10,6 +10,7 @@
 
 import torch
 import torch.nn as nn
+
 from .build import BACKBONE_REGISTRY
 
 
@@ -137,17 +138,17 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
     def __init__(
-            self,
-            block,
-            layers,
-            zero_init_residual=False,
-            groups=1,
-            widen=1,
-            width_per_group=64,
-            replace_stride_with_dilation=None,
-            norm_layer=None,
-            eval_mode=False,
-            padding_mode=False,
+        self,
+        block,
+        layers,
+        zero_init_residual=False,
+        groups=1,
+        widen=1,
+        width_per_group=64,
+        replace_stride_with_dilation=None,
+        norm_layer=None,
+        eval_mode=False,
+        padding_mode=False,
     ):
         super(ResNet, self).__init__()
         if norm_layer is None:
@@ -156,7 +157,7 @@ class ResNet(nn.Module):
 
         self.eval_mode = eval_mode
         self.padding_mode = padding_mode
-        
+
         self.padding = nn.ConstantPad2d(1, 0.0)
 
         self.inplanes = width_per_group * widen
@@ -175,9 +176,7 @@ class ResNet(nn.Module):
 
         # change padding 3 -> 2 compared to original torchvision code because added a padding layer
         num_out_filters = width_per_group * widen
-        self.conv1 = nn.Conv2d(
-            3, num_out_filters, kernel_size=7, stride=2, padding=2, bias=False
-        )
+        self.conv1 = nn.Conv2d(3, num_out_filters, kernel_size=7, stride=2, padding=2, bias=False)
         self.bn1 = norm_layer(num_out_filters)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)

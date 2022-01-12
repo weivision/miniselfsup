@@ -6,8 +6,8 @@
 
 
 from .build import build_head
+from .byol_head import BYOLHead
 from .cls_head import ClsHead
+from .moco_head import MoCoHead
 from .simsiam_head import SimSiamHead
 from .swav_head import SwAVHead
-from .moco_head import MoCoHead
-from .byol_head import BYOLHead

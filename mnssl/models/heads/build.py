@@ -7,13 +7,12 @@
 
 from mnssl.utils import Registry, check_availability
 
-
-HEAD_REGISTRY = Registry('HEAD')
+HEAD_REGISTRY = Registry("HEAD")
 
 
 def build_head(cfg):
     avai_heads = HEAD_REGISTRY.registered_names()
     check_availability(cfg.name, avai_heads)
-    print('| ------ head: {}'.format(cfg.name))
-    
+    print("| ------ head: {}".format(cfg.name))
+
     return HEAD_REGISTRY.get(cfg.name)(cfg)

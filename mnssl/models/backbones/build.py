@@ -7,15 +7,14 @@
 
 from mnssl.utils import Registry, check_availability
 
-
-BACKBONE_REGISTRY = Registry('BACKBONE')
+BACKBONE_REGISTRY = Registry("BACKBONE")
 
 
 def build_backbone(cfg):
     avai_backbones = BACKBONE_REGISTRY.registered_names()
     check_availability(cfg.name, avai_backbones)
-    print('| ------ backbone: {}'.format(cfg.name))
-    
+    print("| ------ backbone: {}".format(cfg.name))
+
     return BACKBONE_REGISTRY.get(cfg.name)(
         eval_mode=cfg.eval_mode,
         zero_init_residual=cfg.zero_init_residual,

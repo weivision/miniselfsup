@@ -4,6 +4,6 @@
 # Licensed under the Apache License, Version 2.0 [see LICENSE for details]
 # ------------------------------------------------------------------------
 
-from .build import build_dataset, build_dataloaders
+from .build import build_dataloaders, build_dataset
 from .imagenet import imagenet1k
 from .transform import *

@@ -7,13 +7,13 @@
 
 # dataset config
 data = dict(
-    dataset='imagenet1k',
-    root='/mnt/lustre/share/wli/database/imagenet',
+    dataset="imagenet1k",
+    root="/mnt/lustre/share/wli/database/imagenet",
     imgs_per_gpu=64,  # total 64*4=256
     workers_per_gpu=4,
     train_transform=dict(
-        name='ssl',
-        type='simsiam',
+        name="ssl",
+        type="simsiam",
         image_size=256,
         crop_size=224,
     ),
@@ -23,19 +23,15 @@ data = dict(
 
 # model config
 model = dict(
-    name='SimSiam',
-    backbone=dict(
-        name='resnet50',
-        zero_init_residual=True,
-        eval_mode=False,
-        padding_mode=False),
+    name="SimSiam",
+    backbone=dict(name="resnet50", zero_init_residual=True, eval_mode=False, padding_mode=False),
     neck=dict(
-        name='SimSiamNeck',
+        name="SimSiamNeck",
         input_dim=2048,
         output_dim=2048,
     ),
     head=dict(
-        name='SimSiamHead',
+        name="SimSiamHead",
         input_dim=2048,
         hidden_dim=512,
         output_dim=2048,
@@ -44,18 +40,18 @@ model = dict(
 
 
 # train config
-lr=0.05
-epochs=100
-print_freq=10
-save_freq=10
+lr = 0.05
+epochs = 100
+print_freq = 10
+save_freq = 10
 
-use_fp16=False
-sync_bn='pytorch'
+use_fp16 = False
+sync_bn = "pytorch"
 
 # optimizer config
 optimizer = dict(
-    name='SimSiam',
-    type='sgd',
+    name="SimSiam",
+    type="sgd",
     lr=lr,
     fix_head_lr=True,
     momentum=0.9,
@@ -64,7 +60,7 @@ optimizer = dict(
 
 # scheduler config
 scheduler = dict(
-    name='SimSiam',
+    name="SimSiam",
     lr=lr,
     epochs=epochs,
 )

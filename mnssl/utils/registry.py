@@ -38,9 +38,9 @@ def check_availability(requested, available):
     if requested not in available:
         psb_ans = get_most_similar_str_to_a_from_b(requested, available)
         raise ValueError(
-            'The requested one is expected '
-            'to belong to {}, but got [{}] '
-            '(do you mean [{}]?)'.format(available, requested, psb_ans)
+            "The requested one is expected "
+            "to belong to {}, but got [{}] "
+            "(do you mean [{}]?)".format(available, requested, psb_ans)
         )
 
 
@@ -99,8 +99,7 @@ class Registry:
     def get(self, name):
         if name not in self._obj_map:
             raise KeyError(
-                'Object name "{}" does not exist '
-                'in "{}" registry'.format(name, self._name)
+                'Object name "{}" does not exist ' 'in "{}" registry'.format(name, self._name)
             )
 
         return self._obj_map[name]

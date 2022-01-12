@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------
 
 
+from .evaluator import Evaluator
 from .optimizer import build_optimizer
 from .scheduler import build_scheduler
 from .trainer import Trainer
-from .evaluator import Evaluator

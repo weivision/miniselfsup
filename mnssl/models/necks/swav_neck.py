@@ -16,6 +16,7 @@ class SwAVNeck(nn.Module):
     """
     Build a SwAV neck.
     """
+
     def __init__(self, cfg):
         """
         Args:
@@ -26,15 +27,15 @@ class SwAVNeck(nn.Module):
         self.norm = cfg.normalize
 
         self.freeze_prototypes_niters = cfg.freeze_prototypes_niters
-        
+
         # build a 2-layer projector
         self.projector = nn.Sequential(
-                nn.Linear(cfg.input_dim, cfg.hidden_dim),
-                nn.BatchNorm1d(cfg.hidden_dim),
-                nn.ReLU(inplace=True),
-                nn.Linear(cfg.hidden_dim, cfg.output_dim),
-            )
-        
+            nn.Linear(cfg.input_dim, cfg.hidden_dim),
+            nn.BatchNorm1d(cfg.hidden_dim),
+            nn.ReLU(inplace=True),
+            nn.Linear(cfg.hidden_dim, cfg.output_dim),
+        )
+
         # prototypes
         self.prototypes = nn.Linear(cfg.output_dim, cfg.nmb_prototypes, bias=False)
 
@@ -44,7 +45,7 @@ class SwAVNeck(nn.Module):
 
         if self.norm:
             x = nn.functional.normalize(x, dim=1, p=2)
-        
+
         if self.prototypes is not None:
 
             # normalize the prototypes
@@ -52,7 +53,7 @@ class SwAVNeck(nn.Module):
                 w = self.prototypes.weight.data.clone()
                 w = nn.functional.normalize(w, dim=1, p=2)
                 self.prototypes.weight.copy_(w)
-            
+
             return x, self.prototypes(x)
-        
+
         return x

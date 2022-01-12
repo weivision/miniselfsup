@@ -6,7 +6,7 @@
 
 
 from .build import build_neck
+from .byol_neck import BYOLNeck
+from .moco_neck import MoCoNeck
 from .simsiam_neck import SimSiamNeck
 from .swav_neck import SwAVNeck
-from .moco_neck import MoCoNeck
-from .byol_neck import BYOLNeck

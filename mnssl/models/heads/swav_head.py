@@ -5,11 +5,12 @@
 # ------------------------------------------------------------------------
 
 
-import torch
-import torch.nn as nn
-import torch.distributed as dist
-import torch.nn.functional as F
 import numpy as np
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+import torch.nn.functional as F
+
 from .build import HEAD_REGISTRY
 
 
@@ -18,36 +19,41 @@ class SwAVHead(nn.Module):
     """
     Build a SwAV head.
     """
+
     def __init__(self, cfg):
         """
         Args:
             cfg: configs
         """
         super(SwAVHead, self).__init__()
-        
+
         self.crops_for_assign = cfg.crops_for_assign
         self.num_crops = cfg.num_crops
         self.epsilon = cfg.epsilon
         self.temperature = cfg.temperature
         self.sinkhorn_iterations = cfg.sinkhorn_iterations
-        
+
         # create the queue
         self.world_size = dist.get_world_size()
         self.queue_length = cfg.queue_length
-        self.register_buffer("queue", torch.zeros(len(self.crops_for_assign), 
-                             self.queue_length // self.world_size, cfg.output_dim))
-        
+        self.register_buffer(
+            "queue",
+            torch.zeros(
+                len(self.crops_for_assign), self.queue_length // self.world_size, cfg.output_dim
+            ),
+        )
+
         self.epoch_queue_starts = cfg.epoch_queue_starts
         self.epoch = 0
 
     def forward(self, embeddings, outputs, protos):
-        
-        bs = int(embeddings.size(0)/sum(self.num_crops))
+
+        bs = int(embeddings.size(0) / sum(self.num_crops))
         # ============ swav loss ... ============
         loss = 0
         for i, crop_id in enumerate(self.crops_for_assign):
             with torch.no_grad():
-                out = outputs[bs * crop_id: bs * (crop_id + 1)].detach()
+                out = outputs[bs * crop_id : bs * (crop_id + 1)].detach()
 
                 # time to use the queue
                 if self.epoch >= self.epoch_queue_starts:
@@ -56,7 +62,7 @@ class SwAVHead(nn.Module):
 
                     # fill the queue
                     self.queue[i, bs:] = self.queue[i, :-bs].clone()
-                    self.queue[i, :bs] = embeddings[crop_id * bs: (crop_id + 1) * bs]
+                    self.queue[i, :bs] = embeddings[crop_id * bs : (crop_id + 1) * bs]
 
                 # get assignments
                 q = self.distributed_sinkhorn(out)[-bs:]
@@ -64,7 +70,7 @@ class SwAVHead(nn.Module):
             # cluster assignment prediction
             subloss = 0
             for v in np.delete(np.arange(np.sum(self.num_crops)), crop_id):
-                x = outputs[bs * v: bs * (v + 1)] / self.temperature
+                x = outputs[bs * v : bs * (v + 1)] / self.temperature
                 subloss -= torch.mean(torch.sum(q * F.log_softmax(x, dim=1), dim=1))
             loss += subloss / (np.sum(self.num_crops) - 1)
         loss /= len(self.crops_for_assign)
@@ -73,9 +79,11 @@ class SwAVHead(nn.Module):
 
     @torch.no_grad()
     def distributed_sinkhorn(self, out):
-        Q = torch.exp(out / self.epsilon).t() # Q is K-by-B for consistency with notations from our paper
-        B = Q.shape[1] * self.world_size # number of samples to assign
-        K = Q.shape[0] # how many prototypes
+        Q = torch.exp(
+            out / self.epsilon
+        ).t()  # Q is K-by-B for consistency with notations from our paper
+        B = Q.shape[1] * self.world_size  # number of samples to assign
+        K = Q.shape[0]  # how many prototypes
 
         # make the matrix sums to 1
         sum_Q = torch.sum(Q)
@@ -93,5 +101,5 @@ class SwAVHead(nn.Module):
             Q /= torch.sum(Q, dim=0, keepdim=True)
             Q /= B
 
-        Q *= B # the colomns must sum to 1 so that Q is an assignment
+        Q *= B  # the colomns must sum to 1 so that Q is an assignment
         return Q.t()

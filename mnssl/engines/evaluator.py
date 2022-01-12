@@ -7,62 +7,72 @@
 
 import os
 import time
+
 import torch
-from mnssl.utils import AverageMeter, ProgressMeter
-from mnssl.utils import is_main_process, save_checkpoint, accuracy
+
+from mnssl.utils import AverageMeter, ProgressMeter, accuracy, is_main_process, save_checkpoint
 
 
 class BaseEvaluator:
-
-    def __init__(self, cfg=None, data_loader=None, 
-                 model=None, optimizer=None, 
-                 scheduler=None, distributed=False):
+    def __init__(
+        self,
+        cfg=None,
+        data_loader=None,
+        model=None,
+        optimizer=None,
+        scheduler=None,
+        distributed=False,
+    ):
         pass
 
     def train_one_epoch(self):
         pass
-    
+
     def train(self, epoch):
         pass
 
     def eval(self, epoch):
         pass
-    
+
     def load(self, ckpt_file=None):
 
         if os.path.isfile(ckpt_file):
             print("=> loading checkpoint '{}'".format(ckpt_file))
-            checkpoint = torch.load(ckpt_file, map_location='cpu')
+            checkpoint = torch.load(ckpt_file, map_location="cpu")
             if self.distributed:
-                self.model.module.backbone.load_state_dict(checkpoint['state_dict'])
+                self.model.module.backbone.load_state_dict(checkpoint["state_dict"])
             else:
-                self.model.backbone.load_state_dict(checkpoint['state_dict'])
+                self.model.backbone.load_state_dict(checkpoint["state_dict"])
             print("=> loaded pretrained backbone checkpoint '{}'.".format(ckpt_file))
         else:
             print("=> no checkpoint found at '{}'".format(ckpt_file))
             return
-    
+
     def resume(self, ckpt_file=None):
         if os.path.isfile(ckpt_file):
             print("=> resuming checkpoint from '{}'".format(ckpt_file))
-            
-            checkpoint = torch.load(ckpt_file, map_location='cpu')
-            self.start_epoch = checkpoint['epoch']
-            self.model.load_state_dict(checkpoint['state_dict'])
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
 
-            print("=> loaded checkpoint '{}' (epoch {})"
-                    .format(ckpt_file, checkpoint['epoch']))
+            checkpoint = torch.load(ckpt_file, map_location="cpu")
+            self.start_epoch = checkpoint["epoch"]
+            self.model.load_state_dict(checkpoint["state_dict"])
+            self.optimizer.load_state_dict(checkpoint["optimizer"])
+
+            print("=> loaded checkpoint '{}' (epoch {})".format(ckpt_file, checkpoint["epoch"]))
         else:
             print("=> no checkpoint found at '{}'".format(ckpt_file))
             return
 
 
 class Evaluator(BaseEvaluator):
-
-    def __init__(self, cfg=None, data_loaders=None, 
-                 model=None, optimizer=None, 
-                 scheduler=None, distributed=False):
+    def __init__(
+        self,
+        cfg=None,
+        data_loaders=None,
+        model=None,
+        optimizer=None,
+        scheduler=None,
+        distributed=False,
+    ):
         super(Evaluator, self).__init__()
         self.lr = cfg.lr
         self.epochs = cfg.epochs
@@ -77,21 +87,22 @@ class Evaluator(BaseEvaluator):
         self.scheduler = scheduler
         self.distributed = distributed
         self.start_epoch = 0
-    
+
     def train_one_epoch(self, epoch):
-        batch_time = AverageMeter('Time', ':6.3f')
-        data_time = AverageMeter('Data', ':6.3f')
-        losses = AverageMeter('Loss', ':.4f')
-        top1 = AverageMeter('Acc@1', ':6.2f')
-        top5 = AverageMeter('Acc@5', ':6.2f')
+        batch_time = AverageMeter("Time", ":6.3f")
+        data_time = AverageMeter("Data", ":6.3f")
+        losses = AverageMeter("Loss", ":.4f")
+        top1 = AverageMeter("Acc@1", ":6.2f")
+        top5 = AverageMeter("Acc@5", ":6.2f")
         progress = ProgressMeter(
             len(self.train_loader),
             [batch_time, data_time, losses, top1, top5],
-            prefix="Epoch: [{}]".format(epoch))
+            prefix="Epoch: [{}]".format(epoch),
+        )
 
         # switch to train mode
         self.model.train()
-        
+
         end = time.time()
         for i, (images, labels) in enumerate(self.train_loader):
             # measure data loading time
@@ -101,8 +112,8 @@ class Evaluator(BaseEvaluator):
 
             # compute output and loss
             outputs = self.model(images, labels)
-            pred = outputs['pred']
-            loss = outputs['loss']
+            pred = outputs["pred"]
+            loss = outputs["loss"]
             losses.update(loss.item(), images[0].size(0))
 
             # measure accuracy and record loss
@@ -125,38 +136,41 @@ class Evaluator(BaseEvaluator):
     def train(self):
         best_acc1 = 0
         for epoch in range(self.start_epoch, self.epochs):
-            
+
             if self.distributed:
                 self.train_loader.sampler.set_epoch(epoch)
-            
+
             self.scheduler.epoch_step(epoch)
             # train for one epoch
             self.train_one_epoch(epoch)
-            
-            if (epoch+1) % self.eval_freq == 0:
+
+            if (epoch + 1) % self.eval_freq == 0:
                 acc1 = self.eval()
 
                 # remember best acc@1 and save checkpoint
                 is_best = acc1 > best_acc1
                 best_acc1 = max(acc1, best_acc1)
 
-            if (epoch+1) % self.save_freq == 0:
-                save_checkpoint({
-                    'epoch': epoch + 1,
-                    'state_dict': self.model.state_dict(),
-                    'optimizer' : self.optimizer.state_dict(),
-                }, is_best=is_best, path=self.work_dir, 
-                filename='checkpoint_{:04d}.pth.tar'.format(epoch))
-    
+            if (epoch + 1) % self.save_freq == 0:
+                save_checkpoint(
+                    {
+                        "epoch": epoch + 1,
+                        "state_dict": self.model.state_dict(),
+                        "optimizer": self.optimizer.state_dict(),
+                    },
+                    is_best=is_best,
+                    path=self.work_dir,
+                    filename="checkpoint_{:04d}.pth.tar".format(epoch),
+                )
+
     def eval(self):
-        batch_time = AverageMeter('Time', ':6.3f')
-        losses = AverageMeter('Loss', ':.4e')
-        top1 = AverageMeter('Acc@1', ':6.2f')
-        top5 = AverageMeter('Acc@5', ':6.2f')
+        batch_time = AverageMeter("Time", ":6.3f")
+        losses = AverageMeter("Loss", ":.4e")
+        top1 = AverageMeter("Acc@1", ":6.2f")
+        top5 = AverageMeter("Acc@5", ":6.2f")
         progress = ProgressMeter(
-            len(self.val_loader),
-            [batch_time, losses, top1, top5],
-            prefix='Test: ')
+            len(self.val_loader), [batch_time, losses, top1, top5], prefix="Test: "
+        )
 
         # switch to evaluate mode
         self.model.eval()
@@ -170,9 +184,9 @@ class Evaluator(BaseEvaluator):
 
                 # compute output
                 outputs = self.model(images, labels)
-                pred = outputs['pred']
-                loss = outputs['loss']
-                
+                pred = outputs["pred"]
+                loss = outputs["loss"]
+
                 # measure accuracy and record loss
                 acc1, acc5 = accuracy(pred, labels, topk=(1, 5))
                 losses.update(loss.item(), images.size(0))
@@ -186,7 +200,6 @@ class Evaluator(BaseEvaluator):
                 if i % self.print_freq == 0:
                     progress.display(i)
 
-            print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
-                .format(top1=top1, top5=top5))
+            print(" * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}".format(top1=top1, top5=top5))
 
         return top1.avg

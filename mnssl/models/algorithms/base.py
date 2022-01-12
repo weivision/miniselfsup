@@ -13,9 +13,8 @@ from ..necks.build import build_neck
 
 
 class BaseMethod(nn.Module):
-    """Base algorithm.
+    """Base algorithm."""
 
-    """
     def __init__(self, cfg=None):
         """
         Args:
@@ -29,10 +28,10 @@ class BaseMethod(nn.Module):
 
     def train_update(self, scheduler):
         pass
-        
+
     def epoch_update(self):
         pass
-    
+
     def iter_update(self):
         pass
 

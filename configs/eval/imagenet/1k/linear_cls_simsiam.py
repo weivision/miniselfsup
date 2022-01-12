@@ -7,18 +7,18 @@
 
 # dataset config
 data = dict(
-    dataset='imagenet1k',
-    root='/mnt/lustre/share/wli/database/imagenet',
+    dataset="imagenet1k",
+    root="/mnt/lustre/share/wli/database/imagenet",
     imgs_per_gpu=1024,  # total 512*8=4096
     workers_per_gpu=4,
     train_only=True,
     train_transform=dict(
-        name='train',
+        name="train",
         image_size=256,
         crop_size=224,
     ),
     val_transform=dict(
-        name='val',
+        name="val",
         image_size=256,
         crop_size=224,
     ),
@@ -27,15 +27,16 @@ data = dict(
 
 # model config
 model = dict(
-    name='LinearCls',
+    name="LinearCls",
     backbone=dict(
-        name='resnet50',
+        name="resnet50",
         zero_init_residual=False,
         eval_mode=False,
-        padding_mode=True,),
+        padding_mode=True,
+    ),
     neck=None,
     head=dict(
-        name='ClsHead',
+        name="ClsHead",
         input_dim=2048,
         num_classes=1000,
     ),
@@ -43,18 +44,18 @@ model = dict(
 
 
 # train config
-lr=1.6
-epochs=90
-print_freq=10
-eval_freq=1
-save_freq=10
+lr = 1.6
+epochs = 90
+print_freq = 10
+eval_freq = 1
+save_freq = 10
 
 
 # optimizer config
 optimizer = dict(
-    name='LinearCls',
+    name="LinearCls",
     larc=True,
-    type='sgd',
+    type="sgd",
     lr=lr,
     momentum=0.9,
     weight_decay=0.0,
@@ -64,7 +65,7 @@ optimizer = dict(
 
 # scheduler config
 scheduler = dict(
-    name='LinearCls',
+    name="LinearCls",
     lr=lr,
     epochs=epochs,
 )

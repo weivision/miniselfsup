@@ -5,8 +5,8 @@
 # ------------------------------------------------------------------------
 
 
+from .byol import BYOL
 from .linearcls import LinearCls
+from .moco import MoCo
 from .simsiam import SimSiam
 from .swav import SwAV
-from .moco import MoCo
-from .byol import BYOL

@@ -5,23 +5,21 @@
 # ------------------------------------------------------------------------
 
 
-import mc
+import errno
 import io
 import os
 import pathlib
 import warnings
-import errno
-from PIL import Image
 from collections import defaultdict
-from torch.utils.data import Dataset
+
+import mc
 import numpy as np
+from PIL import Image
+from torch.utils.data import Dataset
 
 
 @DATASET_REGISTRY.register()
 class CIFAR(Dataset):
-
-    def __init__(self, root: str, train, transform, read_from='mc'):
+    def __init__(self, root: str, train, transform, read_from="mc"):
         if not os.path.exists(root):
-            raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), root)
-
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), root)

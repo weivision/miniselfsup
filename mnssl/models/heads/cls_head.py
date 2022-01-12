@@ -7,6 +7,7 @@
 
 import torch
 import torch.nn as nn
+
 from .build import HEAD_REGISTRY
 
 
@@ -15,6 +16,7 @@ class ClsHead(nn.Module):
     """
     Build a Classification head.
     """
+
     def __init__(self, cfg):
         """
         Args:
@@ -29,9 +31,9 @@ class ClsHead(nn.Module):
         self.predictor.bias.data.zero_()
 
         self.criterion = nn.CrossEntropyLoss()
-    
+
     def forward(self, z, labels):
-        
-        p = self.predictor(z) # NxC
+
+        p = self.predictor(z)  # NxC
         loss = self.criterion(p, labels)
         return dict(pred=p, loss=loss)

@@ -7,18 +7,18 @@
 
 # dataset config
 data = dict(
-    dataset='imagenet1k',
-    root='/mnt/lustre/share/wli/database/imagenet',
+    dataset="imagenet1k",
+    root="/mnt/lustre/share/wli/database/imagenet",
     imgs_per_gpu=64,  # total 64*4=256
     workers_per_gpu=10,
     train_transform=dict(
-        name='ssl',
-        type='swav',
+        name="ssl",
+        type="swav",
         image_size=256,
         crop_size=[224, 96],
         num_crops=[2, 6],
         min_scale_crops=[0.14, 0.05],
-        max_scale_crops=[1., 0.14],
+        max_scale_crops=[1.0, 0.14],
     ),
     val_transform=None,
 )
@@ -26,14 +26,10 @@ data = dict(
 
 # model config
 model = dict(
-    name='SwAV',
-    backbone=dict(
-        name='resnet50',
-        zero_init_residual=False,
-        eval_mode=False,
-        padding_mode=True),
+    name="SwAV",
+    backbone=dict(name="resnet50", zero_init_residual=False, eval_mode=False, padding_mode=True),
     neck=dict(
-        name='SwAVNeck',
+        name="SwAVNeck",
         normalize=True,
         input_dim=2048,
         hidden_dim=2048,
@@ -42,7 +38,7 @@ model = dict(
         freeze_prototypes_niters=5005,
     ),
     head=dict(
-        name='SwAVHead',
+        name="SwAVHead",
         num_crops=[2, 6],
         crops_for_assign=[0, 1],
         epsilon=0.05,
@@ -56,18 +52,18 @@ model = dict(
 
 
 # train config
-lr=0.6
-epochs=200
-print_freq=10
-save_freq=10
-use_fp16=True
-sync_bn='pytorch'
+lr = 0.6
+epochs = 200
+print_freq = 10
+save_freq = 10
+use_fp16 = True
+sync_bn = "pytorch"
 
 
 # optimizer config
 optimizer = dict(
-    name='SwAV',
-    type='sgd',
+    name="SwAV",
+    type="sgd",
     use_fp16=use_fp16,
     base_lr=lr,
     larc=True,
@@ -77,7 +73,7 @@ optimizer = dict(
 
 # scheduler config
 scheduler = dict(
-    name='SwAV',
+    name="SwAV",
     base_lr=lr,
     final_lr=0.0006,
     start_warmup=0,

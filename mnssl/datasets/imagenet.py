@@ -5,24 +5,24 @@
 # ------------------------------------------------------------------------
 
 
+import errno
 import io
 import os
 import pathlib
 import warnings
-import errno
 import zipfile
-from PIL import Image
-from PIL import ImageFile
 
+from PIL import Image, ImageFile
 from torch.utils.data import Dataset
-from .build import DATASET_REGISTRY
 
+from .build import DATASET_REGISTRY
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class ZipReader(object):
     """A class to read zipped files"""
+
     zip_bank = dict()
 
     def __init__(self):
@@ -32,7 +32,7 @@ class ZipReader(object):
     def get_zipfile(path):
         zip_bank = ZipReader.zip_bank
         if path not in zip_bank:
-            zfile = zipfile.ZipFile(path, 'r')
+            zfile = zipfile.ZipFile(path, "r")
             zip_bank[path] = zfile
         return zip_bank[path]
 
@@ -47,22 +47,20 @@ def img_loader(img_bytes):
     warnings.filterwarnings("ignore", "(Possibly )?corrupt EXIF data", UserWarning)
     buff = io.BytesIO(img_bytes)
     with Image.open(buff) as img:
-        img = img.convert('RGB')
+        img = img.convert("RGB")
     return img
 
 
 class ImageNet(Dataset):
-
-    def __init__(self, root: str, train, transform=None, read_from='zip', num_classes=1000):
+    def __init__(self, root: str, train, transform=None, read_from="zip", num_classes=1000):
 
         if not os.path.exists(root):
-            raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), root)
-        
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), root)
+
         root = pathlib.Path(root)
-        train_zip, train_meta = root / 'train.zip', root / 'meta' / 'train.txt'
-        val_zip, val_meta = root / 'val.zip', root / 'meta' / 'val.txt'
-        
+        train_zip, train_meta = root / "train.zip", root / "meta" / "train.txt"
+        val_zip, val_meta = root / "val.zip", root / "meta" / "val.txt"
+
         data_info = (train_zip, train_meta) if train else (val_zip, val_meta)
         root_file, meta_file = str(data_info[0]), str(data_info[1])
 
@@ -71,30 +69,30 @@ class ImageNet(Dataset):
         self.transform = transform
         self.multi_crop = isinstance(transform, list)
         self.read_from = read_from
-        
+
         with open(meta_file) as f:
             lines = f.readlines()
-        
+
         self.num_data = len(lines)
         self.metas = []
         for line in lines:
             img_path, label = line.rstrip().split()
             self.metas.append((img_path, int(label)))
-        
+
         self.metas = tuple(self.metas)
         self.targets = tuple(m[1] for m in self.metas)
-        
+
         self.read_from = read_from
-    
+
     def read_file(self, img_path):
-        
+
         imgbytes = ZipReader.read(self.root_file, img_path)
-        
+
         return imgbytes
-    
+
     def __len__(self):
         return self.num_data
-    
+
     def __getitem__(self, idx):
         img_path, label = self.metas[idx]
         img = img_loader(self.read_file(img_path))
