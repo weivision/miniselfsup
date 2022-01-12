@@ -70,7 +70,7 @@ optimizer = dict(
     type='sgd',
     use_fp16=use_fp16,
     base_lr=lr,
-    lars=True,
+    larc=True,
     momentum=0.9,
     weight_decay=0.000001,
 )

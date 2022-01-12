@@ -8,6 +8,8 @@
 import random
 import numpy as np
 import torchvision.transforms as transforms
+from torchvision.transforms import InterpolationMode
+
 from PIL import Image, ImageFilter, ImageOps
 from .build import TRANSFORM_REGISTRY
 
@@ -79,7 +81,7 @@ def ssl(dataset, cfg):
     
     elif cfg.type in ['byol', ]:
         augmentation1 = [
-                transforms.RandomResizedCrop(cfg.crop_size, scale=(0.08, 1.), interpolation=3),
+                transforms.RandomResizedCrop(cfg.crop_size, scale=(0.08, 1.), interpolation=InterpolationMode.BICUBIC),
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomApply([
                     transforms.ColorJitter(0.4, 0.4, 0.2, 0.1) 
@@ -91,7 +93,7 @@ def ssl(dataset, cfg):
             ]
         
         augmentation2 = [
-                transforms.RandomResizedCrop(cfg.crop_size, scale=(0.08, 1.), interpolation=3),
+                transforms.RandomResizedCrop(cfg.crop_size, scale=(0.08, 1.), interpolation=InterpolationMode.BICUBIC),
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomApply([
                     transforms.ColorJitter(0.4, 0.4, 0.2, 0.1) 

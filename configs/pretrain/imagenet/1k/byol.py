@@ -9,7 +9,7 @@
 data = dict(
     dataset='imagenet1k',
     root='/mnt/lustre/share/wli/database/imagenet',
-    imgs_per_gpu=128,  # total 128*4*8=256
+    imgs_per_gpu=128,  # total 128*4=512
     workers_per_gpu=4,
     train_transform=dict(
         name='ssl',
@@ -61,7 +61,7 @@ optimizer = dict(
     name='BYOL',
     type='sgd',
     base_lr=lr,
-    lars=True,
+    larc=True,
     momentum=0.9,
     weight_decay=0.000001,
 )

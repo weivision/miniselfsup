@@ -53,7 +53,7 @@ save_freq=10
 # optimizer config
 optimizer = dict(
     name='LinearCls',
-    lars=True,
+    larc=True,
     type='sgd',
     lr=lr,
     momentum=0.9,
