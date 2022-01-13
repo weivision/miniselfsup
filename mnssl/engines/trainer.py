@@ -9,11 +9,10 @@ import os
 import time
 
 import torch
-import torch.backends.cudnn as cudnn
 from torch.cuda.amp import GradScaler
 from torch.cuda.amp import autocast as autocast
 
-from mnssl.utils import AverageMeter, ProgressMeter, is_main_process, save_checkpoint
+from mnssl.utils import AverageMeter, ProgressMeter, save_checkpoint
 
 
 class BaseTrainer:

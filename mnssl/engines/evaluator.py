@@ -10,7 +10,7 @@ import time
 
 import torch
 
-from mnssl.utils import AverageMeter, ProgressMeter, accuracy, is_main_process, save_checkpoint
+from mnssl.utils import AverageMeter, ProgressMeter, accuracy, save_checkpoint
 
 
 class BaseEvaluator:

@@ -4,15 +4,10 @@
 # Licensed under the Apache License, Version 2.0 [see LICENSE for details]
 # ------------------------------------------------------------------------
 
+
 import argparse
-import datetime
-import json
-import random
-import time
-import warnings
 from pathlib import Path
 
-import numpy as np
 import torch.backends.cudnn as cudnn
 from torch.nn import SyncBatchNorm
 from torch.nn.parallel.distributed import DistributedDataParallel

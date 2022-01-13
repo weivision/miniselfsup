@@ -14,23 +14,16 @@
 """
 Misc functions, including distributed helpers.
 """
-import datetime
 import os
-import pickle
-import random
 import shutil
 import subprocess
 import time
 import warnings
-from collections import defaultdict, deque
 from importlib import import_module
-from typing import List, Optional
 
 import numpy as np
 import torch
-import torch.backends.cudnn as cudnn
 import torch.distributed as dist
-from torch import Tensor
 
 
 @torch.no_grad()

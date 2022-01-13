@@ -7,9 +7,8 @@
 
 import random
 
-import numpy as np
 import torchvision.transforms as transforms
-from PIL import Image, ImageFilter, ImageOps
+from PIL import ImageFilter, ImageOps
 from torchvision.transforms import InterpolationMode
 
 from .build import TRANSFORM_REGISTRY
@@ -152,7 +151,7 @@ def ssl(dataset, cfg):
 
         return trans
     else:
-        raise Exception("Sorry, can not find transform: ".format(cfg.type))
+        raise Exception("Sorry, can not find transform: {}.".format(cfg.type))
 
 
 @TRANSFORM_REGISTRY.register()
