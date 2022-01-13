@@ -7,9 +7,9 @@
 
 from mnssl.utils import Registry, check_availability
 
-# from .algorithms import BYOL, LinearCls, MoCo, SimSiam, SwAV
-
 ALGORITHM_REGISTRY = Registry("ALGORITHM")
+
+from .algorithms import BYOL, LinearCls, MoCo, SimSiam, SwAV
 
 
 def build_model(cfg):
