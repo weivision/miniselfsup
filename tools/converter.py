@@ -7,8 +7,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 # ------------------------------------------------------------------------
 
-import argparse
 
+import argparse
 import torch
 
 
