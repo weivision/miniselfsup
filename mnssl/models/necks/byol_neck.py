@@ -5,7 +5,6 @@
 # ------------------------------------------------------------------------
 
 
-import torch
 import torch.nn as nn
 
 from .build import NECK_REGISTRY

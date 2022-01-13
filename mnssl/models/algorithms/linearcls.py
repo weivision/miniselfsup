@@ -5,13 +5,9 @@
 # ------------------------------------------------------------------------
 
 
-import torch
-import torch.nn as nn
-
 from ..backbones.build import build_backbone
 from ..build import ALGORITHM_REGISTRY
 from ..heads.build import build_head
-from ..necks.build import build_neck
 from .base import BaseMethod
 
 

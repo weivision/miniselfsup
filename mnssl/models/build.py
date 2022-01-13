@@ -7,7 +7,7 @@
 
 from mnssl.utils import Registry, check_availability
 
-from .algorithms import BYOL, LinearCls, MoCo, SimSiam, SwAV
+# from .algorithms import BYOL, LinearCls, MoCo, SimSiam, SwAV
 
 ALGORITHM_REGISTRY = Registry("ALGORITHM")
 

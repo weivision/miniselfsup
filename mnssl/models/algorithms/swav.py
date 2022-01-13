@@ -6,7 +6,6 @@
 
 
 import torch
-import torch.nn as nn
 
 from ..backbones.build import build_backbone
 from ..build import ALGORITHM_REGISTRY
