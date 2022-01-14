@@ -13,10 +13,9 @@ import torch.nn as nn
 from mnssl.utils import concat_all_gather
 
 from ..backbones.build import build_backbone
-from ..build import ALGORITHM_REGISTRY
 from ..heads.build import build_head
 from ..necks.build import build_neck
-from .base import BaseMethod
+from .base import ALGORITHM_REGISTRY, BaseMethod
 
 
 @ALGORITHM_REGISTRY.register()

@@ -7,6 +7,10 @@
 
 import torch.nn as nn
 
+from mnssl.utils import Registry
+
+ALGORITHM_REGISTRY = Registry("ALGORITHM")  # noqa
+
 
 class BaseMethod(nn.Module):
     """Base algorithm."""

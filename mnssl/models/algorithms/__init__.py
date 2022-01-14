@@ -5,6 +5,7 @@
 # ------------------------------------------------------------------------
 
 
+from .base import ALGORITHM_REGISTRY
 from .byol import BYOL
 from .linearcls import LinearCls
 from .moco import MoCo

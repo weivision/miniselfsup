@@ -6,9 +6,8 @@
 
 
 from ..backbones.build import build_backbone
-from ..build import ALGORITHM_REGISTRY
 from ..heads.build import build_head
-from .base import BaseMethod
+from .base import ALGORITHM_REGISTRY, BaseMethod
 
 
 @ALGORITHM_REGISTRY.register()

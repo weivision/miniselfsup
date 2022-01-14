@@ -5,11 +5,9 @@
 # ------------------------------------------------------------------------
 
 
-from mnssl.utils import Registry, check_availability
+from mnssl.utils import check_availability
 
-ALGORITHM_REGISTRY = Registry("ALGORITHM")
-
-from .algorithms import BYOL, LinearCls, MoCo, SimSiam, SwAV
+from .algorithms import ALGORITHM_REGISTRY, BYOL, LinearCls, MoCo, SimSiam, SwAV  # noqa
 
 
 def build_model(cfg):
