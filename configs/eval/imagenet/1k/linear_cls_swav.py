@@ -9,8 +9,8 @@
 data = dict(
     dataset="imagenet1k",
     root="/mnt/lustre/share/wli/database/imagenet",
-    imgs_per_gpu=1024,  # total 512*8 or 1024*4 = 4096
-    workers_per_gpu=5,
+    imgs_per_gpu=32,  # total 32*8 or 64*4 = 256
+    workers_per_gpu=10,
     train_only=True,
     train_transform=dict(
         name="train",
@@ -44,8 +44,8 @@ model = dict(
 
 
 # train config
-lr = 1.6
-epochs = 90
+lr = 0.3
+epochs = 100
 print_freq = 10
 eval_freq = 1
 save_freq = 10
@@ -54,18 +54,19 @@ save_freq = 10
 # optimizer config
 optimizer = dict(
     name="LinearCls",
-    larc=True,
+    larc=False,
     type="sgd",
     lr=lr,
     momentum=0.9,
-    weight_decay=0.0,
+    weight_decay=0.000001,
     epochs=epochs,
 )
 
 
 # scheduler config
 scheduler = dict(
-    name="LinearCls",
+    name="LinearSwAV",
     lr=lr,
+    final_lr=0,
     epochs=epochs,
 )

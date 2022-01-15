@@ -6,4 +6,4 @@
 
 
 from .build import build_scheduler
-from .policy import LinearCls, MoCo, SimSiam, SwAV
+from .policy import LinearCls, LinearSwAV, MoCo, SimSiam, SwAV

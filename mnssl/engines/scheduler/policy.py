@@ -6,6 +6,7 @@
 
 
 import math
+import torch
 
 import numpy as np
 
@@ -110,3 +111,20 @@ class LinearCls(BaseScheduler):
         cur_lr = self.lr * 0.5 * (1.0 + math.cos(math.pi * epoch / self.epochs))
         for param_group in self.optimizer.param_groups:
             param_group["lr"] = cur_lr
+
+
+@SCHEDULER_REGISTRY.register()
+class LinearSwAV(BaseScheduler):
+    def __init__(self, cfg=None, optimizer=None):
+        super(LinearSwAV, self).__init__()
+
+        self.optimizer = optimizer
+        self.lr = cfg.lr
+        self.epochs = cfg.epochs
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, cfg.epochs, eta_min=cfg.final_lr
+        )
+
+    def epoch_step(self, epoch):
+        """Decay the learning rate based on schedule"""
+        self.scheduler.step()
