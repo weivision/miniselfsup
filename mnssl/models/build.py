@@ -7,7 +7,7 @@
 
 from mnssl.utils import check_availability
 
-from .algorithms import ALGORITHM_REGISTRY, BYOL, LinearCls, MoCo, SimSiam, SwAV  # noqa
+from .algorithms import ALGORITHM_REGISTRY, BYOL, LinearCls, MoCo, SimSiam, SwAV  # noqa: F401
 
 
 def build_model(cfg):

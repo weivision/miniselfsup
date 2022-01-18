@@ -1,11 +1,11 @@
 #!/usr/bin/bash
-echo '[USAGE] sh scripts/slurm_eval.sh <CONFIG> <ID> <GPU_NUM> <PORT> <CKPT> <JOB_NAME>'
+echo '[USAGE] sh scripts/slurm_eval.sh <ID> <GPU_NUM> <PORT> <CONFIG> <CKPT> <JOB_NAME>'
 set -x
 
-CONFIG=$1
-ID=$2
-GPU_NUM=$3
-PORT=$4
+ID=$1
+GPU_NUM=$2
+PORT=$3
+CONFIG=$4
 CKPT=$5
 JOB_NAME=$6
 
