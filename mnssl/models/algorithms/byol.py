@@ -52,6 +52,7 @@ class BYOL(BaseMethod):
         self.epoch = 0
         self.iteration = 0
         self.max_iter = 0
+        self.iter_per_epoch = 0
 
     @torch.no_grad()
     def momentum_update(self):
@@ -83,7 +84,10 @@ class BYOL(BaseMethod):
         return dict(loss=loss)
 
     def train_update(self, scheduler):
-        self.max_iter = scheduler.epochs * scheduler.iter_per_epoch
+        self.iter_per_epoch = scheduler.iter_per_epoch
+        self.max_iter = scheduler.epochs * self.iter_per_epoch
+        self.epoch = scheduler.cur_epoch
+        self.iteration = self.epoch * self.iter_per_epoch
 
     def iter_update(self):
 

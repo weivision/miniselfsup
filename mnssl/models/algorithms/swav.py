@@ -61,10 +61,10 @@ class SwAV(BaseMethod):
             start_idx = end_idx
         return self.neck(output)
 
-    def epoch_update(self):
-        self.epoch += 1
+    def epoch_update(self, epoch):
+        self.epoch = epoch
         self.head.epoch = self.epoch
-
+    
     def iter_update(self):
         if self.iteration <= self.neck.freeze_prototypes_niters:
             self.iteration += 1

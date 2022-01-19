@@ -176,7 +176,8 @@ class Trainer(BaseTrainer):
                 progress.display(i)
 
     def train(self):
-
+        
+        self.scheduler.cur_epoch = self.start_epoch
         if self.distributed:
             self.model.module.train_update(self.scheduler)
         else:
@@ -189,13 +190,13 @@ class Trainer(BaseTrainer):
 
             self.scheduler.epoch_step(epoch)
 
+            if self.distributed:
+                self.model.module.epoch_update(epoch)
+            else:
+                self.model.epoch_update(epoch)
+            
             # train for one epoch
             self.train_one_epoch(epoch)
-
-            if self.distributed:
-                self.model.module.epoch_update()
-            else:
-                self.model.epoch_update()
 
             if (epoch + 1) % self.save_freq == 0:
                 save_dict = {

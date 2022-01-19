@@ -29,7 +29,7 @@ class BaseMethod(nn.Module):
     def train_update(self, scheduler):
         pass
 
-    def epoch_update(self):
+    def epoch_update(self, epoch):
         pass
 
     def iter_update(self):

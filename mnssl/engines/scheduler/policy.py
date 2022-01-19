@@ -15,7 +15,7 @@ from .build import SCHEDULER_REGISTRY
 
 class BaseScheduler:
     def __init__(self, cfg=None, optimizer=None):
-        pass
+        self.cur_epoch = 0
 
     def epoch_step(self, epoch):
         pass
