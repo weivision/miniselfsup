@@ -31,6 +31,7 @@ class SwAV(BaseMethod):
         self.head = build_head(cfg.head)
         self.epoch = 0
         self.iteration = 0
+        self.iter_per_epoch = 0
 
     def forward(self, inputs):
 
@@ -61,13 +62,17 @@ class SwAV(BaseMethod):
             start_idx = end_idx
         return self.neck(output)
 
+    def train_update(self, scheduler):
+        self.iter_per_epoch = scheduler.iter_per_epoch
+        self.epoch = scheduler.cur_epoch
+        self.iteration = self.epoch * self.iter_per_epoch
+
     def epoch_update(self, epoch):
         self.epoch = epoch
         self.head.epoch = self.epoch
-    
+
     def iter_update(self):
-        if self.iteration <= self.neck.freeze_prototypes_niters:
-            self.iteration += 1
+        self.iteration += 1
 
     def optim_update(self):
         # cancel gradients for the prototypes

@@ -58,6 +58,7 @@ print_freq = 10
 save_freq = 10
 use_fp16 = True
 sync_bn = "pytorch"
+save_queue = True
 
 
 # optimizer config

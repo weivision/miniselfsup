@@ -42,7 +42,7 @@ class SwAVHead(nn.Module):
                 len(self.crops_for_assign), self.queue_length // self.world_size, cfg.output_dim
             ),
         )
-
+        
         self.epoch_queue_starts = cfg.epoch_queue_starts
         self.epoch = 0
 

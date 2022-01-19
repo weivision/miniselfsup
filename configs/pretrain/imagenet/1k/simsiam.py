@@ -47,6 +47,7 @@ save_freq = 10
 
 use_fp16 = False
 sync_bn = "pytorch"
+save_queue = False
 
 # optimizer config
 optimizer = dict(

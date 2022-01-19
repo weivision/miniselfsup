@@ -53,6 +53,7 @@ print_freq = 10
 save_freq = 10
 use_fp16 = False
 sync_bn = None
+save_queue = False
 
 # optimizer config
 optimizer = dict(

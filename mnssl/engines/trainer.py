@@ -50,13 +50,24 @@ class BaseTrainer:
         if os.path.isfile(ckpt_file):
 
             print("=> resuming checkpoint from '{}'".format(ckpt_file))
-            map_location = "cuda:" + str(torch.distributed.get_rank() % torch.cuda.device_count())
+            rank = torch.distributed.get_rank()
+            map_location = "cuda:" + str(rank % torch.cuda.device_count())
             checkpoint = torch.load(ckpt_file, map_location=map_location)
             self.start_epoch = checkpoint["epoch"]
             self.model.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
 
             print("=> loaded checkpoint '{}' (epoch {})".format(ckpt_file, checkpoint["epoch"]))
+            if self.save_queue:
+                queue_file = os.path.join(self.work_dir, "queue" + str(rank) + ".pth")
+                if os.path.isfile(queue_file):
+                    queue = torch.load(queue_file)["queue"]
+                    if self.distributed:
+                        self.model.module.neck.queue.copy_(queue)
+                    else:
+                        self.model.neck.queue.copy_(queue)
+                else:
+                    print("=> no queue file found at '{}'".format(queue_file))
         else:
             print("=> no checkpoint found at '{}'".format(ckpt_file))
             exit(0)
@@ -88,6 +99,7 @@ class Trainer(BaseTrainer):
         self.start_epoch = 0
 
         self.use_fp16 = cfg.use_fp16
+        self.save_queue = cfg.save_queue
 
         if self.use_fp16:
             self.scaler = GradScaler()
@@ -178,6 +190,7 @@ class Trainer(BaseTrainer):
     def train(self):
         
         self.scheduler.cur_epoch = self.start_epoch
+
         if self.distributed:
             self.model.module.train_update(self.scheduler)
         else:
@@ -211,3 +224,14 @@ class Trainer(BaseTrainer):
                     path=self.work_dir,
                     filename="checkpoint_{:04d}.pth.tar".format(epoch),
                 )
+
+                if self.save_queue:
+                    rank = torch.distributed.get_rank()
+                    queue_file = os.path.join(self.work_dir, "queue" + str(rank) + ".pth")
+
+                    if self.distributed:
+                        queue = self.model.module.neck.queue
+                    else:
+                        queue = self.model.neck.queue
+
+                    torch.save({"queue": queue}, queue_file)
