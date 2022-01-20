@@ -63,9 +63,9 @@ class BaseTrainer:
                 if os.path.isfile(queue_file):
                     queue = torch.load(queue_file)["queue"]
                     if self.distributed:
-                        self.model.module.neck.queue.copy_(queue)
+                        self.model.module.head.queue.copy_(queue)
                     else:
-                        self.model.neck.queue.copy_(queue)
+                        self.model.head.queue.copy_(queue)
                 else:
                     print("=> no queue file found at '{}'".format(queue_file))
         else:
@@ -230,8 +230,8 @@ class Trainer(BaseTrainer):
                     queue_file = os.path.join(self.work_dir, "queue" + str(rank) + ".pth")
 
                     if self.distributed:
-                        queue = self.model.module.neck.queue
+                        queue = self.model.module.head.queue
                     else:
-                        queue = self.model.neck.queue
+                        queue = self.model.head.queue
 
                     torch.save({"queue": queue}, queue_file)
