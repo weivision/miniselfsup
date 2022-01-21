@@ -5,8 +5,9 @@
 # ------------------------------------------------------------------------
 
 
-from torch.utils.data import DataLoader, DistributedSampler
+import torch.distributed as dist
 
+from torch.utils.data import DataLoader, DistributedSampler
 from mnssl.utils import Registry, check_availability
 
 TRANSFORM_REGISTRY = Registry("TRANSFORM")
@@ -46,17 +47,21 @@ def build_dataloaders(cfg, distributed=False):
     train_dataset, val_dataset = build_dataset(cfg)
 
     if distributed:
-        train_sampler = DistributedSampler(train_dataset)
+        num_tasks = dist.get_world_size()
+        global_rank = dist.get_rank()
+        train_sampler = DistributedSampler(
+            train_dataset, num_replicas=num_tasks, rank=global_rank, shuffle=True
+        )
     else:
         train_sampler = None
 
     train_loader = DataLoader(
         train_dataset,
+        sampler=train_sampler,
         batch_size=cfg.imgs_per_gpu,
         shuffle=(train_sampler is None),
         num_workers=cfg.workers_per_gpu,
         pin_memory=True,
-        sampler=train_sampler,
         drop_last=True,
         persistent_workers=True,
     )
