@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-echo '[USAGE] sh scripts/slurm_eval.sh <ID> <GPU_NUM> <PORT> <CONFIG> <CKPT> <JOB_NAME>'
+echo "[USAGE] sh scripts/slurm_eval.sh <ID> <GPU_NUM> <PORT> <CONFIG> <CKPT> <JOB_NAME>"
 set -x
 
 ID=$1
@@ -35,3 +35,5 @@ python -u tools/eval.py \
         --load_from $CHECKPOINT \
         --port $PORT \
         2>&1 | tee $EXPS/$JOB_NAME.log > /dev/null &
+
+echo "tail -f $EXPS/$JOB_NAME.log"

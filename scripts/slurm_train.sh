@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-echo '[USAGE] sh scripts/slurm_train.sh <ID> <GPU_NUM> <PORT> <CONFIG> <JOB_NAME>'
+echo "[USAGE] sh scripts/slurm_train.sh <ID> <GPU_NUM> <PORT> <CONFIG> <JOB_NAME>"
 set -x
 
 ID=$1
@@ -31,3 +31,5 @@ python -u tools/train.py \
         --work_dir $EXPS/$JOB_NAME \
         --port $PORT \
         2>&1 | tee $EXPS/$JOB_NAME.log > /dev/null &
+
+echo "tail -f $EXPS/$JOB_NAME.log"
