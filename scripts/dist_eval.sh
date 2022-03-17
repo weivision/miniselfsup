@@ -39,3 +39,4 @@ python -m torch.distributed.launch --nproc_per_node $GPU_NUM \
         --load_from $CHECKPOINT \
         --port $PORT \
         2>&1 | tee $EXPS/$JOB_NAME.log > /dev/null &
+echo "tail -f $EXPS/$JOB_NAME.log"

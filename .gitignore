@@ -15,6 +15,5 @@ experiment-*
 .vscode
 exps/
 pretrained/
-data/
 dev/
 plot*.py

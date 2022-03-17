@@ -15,7 +15,7 @@ from .build import TRANSFORM_REGISTRY
 
 normalize = {
     "imagenet1k": transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    "imagenet100": transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    "imagenet200": transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     "cifar10": transforms.Normalize(mean=[0.491, 0.482, 0.446], std=[0.247, 0.243, 0.261]),
     "cifar100": transforms.Normalize(mean=[0.507, 0.486, 0.440], std=[0.267, 0.256, 0.276]),
 }

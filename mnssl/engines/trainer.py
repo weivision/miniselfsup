@@ -175,10 +175,11 @@ class Trainer(BaseTrainer):
 
                 self.optimizer.zero_grad()
 
-            if self.distributed:
-                self.model.module.iter_update()
-            else:
-                self.model.iter_update()
+                # Test for BYOL
+                if self.distributed:
+                    self.model.module.iter_update()
+                else:
+                    self.model.iter_update()
 
             # measure elapsed time
             batch_time.update(time.time() - end)

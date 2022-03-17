@@ -33,3 +33,4 @@ python -u tools/train.py \
         --resume_from $RESUME \
         --port $PORT \
         2>&1 | tee $EXPS/$JOB_NAME.log > /dev/null &
+echo "tail -f $EXPS/$JOB_NAME.log"
