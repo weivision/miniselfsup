@@ -25,7 +25,9 @@ class MoCoNeck(nn.Module):
 
         # build a 2-layer encoder
         self.mlp = nn.Sequential(
-            nn.Linear(cfg.input_dim, cfg.hid_dim), nn.ReLU(), nn.Linear(cfg.hid_dim, cfg.output_dim)
+            nn.Linear(cfg.input_dim, cfg.hid_dim), 
+            nn.ReLU(), 
+            nn.Linear(cfg.hid_dim, cfg.output_dim)
         )
 
     def forward(self, x):

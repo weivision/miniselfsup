@@ -91,7 +91,7 @@ def ssl(dataset, cfg):
             transforms.RandomHorizontalFlip(),
             transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)], p=0.8),
             transforms.RandomGrayscale(p=0.2),
-            transforms.RandomApply([GaussianBlur([0.1, 2.0])], p=0.5),
+            transforms.RandomApply([GaussianBlur([0.1, 2.0])], p=0.5), # 1.0
             transforms.ToTensor(),
             normalize[dataset],
         ]
@@ -103,7 +103,7 @@ def ssl(dataset, cfg):
             transforms.RandomHorizontalFlip(),
             transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)], p=0.8),
             transforms.RandomGrayscale(p=0.2),
-            transforms.RandomApply([GaussianBlur([0.1, 2.0])], p=0.5),
+            transforms.RandomApply([GaussianBlur([0.1, 2.0])], p=0.5), # 0.1
             transforms.RandomApply([Solarization()], p=0.2),
             transforms.ToTensor(),
             normalize[dataset],
